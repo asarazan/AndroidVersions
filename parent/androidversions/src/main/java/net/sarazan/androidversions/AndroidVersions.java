@@ -24,21 +24,20 @@ public final class AndroidVersions {
 
     private AndroidVersions() {}
 
-    public static void migrate(@NotNull Context c, @Nullable List<AndroidMigration> migrations) {
+    @Nullable
+    public static Integer migrate(@NotNull Context c, @NotNull List<AndroidMigration> migrations) {
         int versionCode = getVersionCode(c);
         Pref<Integer> pref = Prefs.sharedPreference(c, KEY, Integer.class);
         Integer lastVersionCode = pref.get();
-        if (lastVersionCode != null) {
-            if (lastVersionCode == versionCode) return;
-            if (migrations != null) {
-                for (AndroidMigration m : migrations) {
-                    if (m.version <= lastVersionCode) {
-                        m.run(lastVersionCode);
-                    }
+        if (lastVersionCode != null && lastVersionCode != versionCode) {
+            for (AndroidMigration m : migrations) {
+                if (m.version <= lastVersionCode) {
+                    m.run(lastVersionCode);
                 }
             }
         }
         pref.put(versionCode, true);
+        return lastVersionCode;
     }
 
     public static int getVersionCode(@NotNull Context c) {
