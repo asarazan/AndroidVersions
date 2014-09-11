@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
-import net.sarazan.prefs.Pref;
 import net.sarazan.prefs.Prefs;
 
 import org.jetbrains.annotations.NotNull;
@@ -24,20 +23,34 @@ public final class AndroidVersions {
 
     private AndroidVersions() {}
 
+    /**
+     * Will check last known app version, and run any migrations added after that number.
+     * @param c context
+     * @param migrations list of AndroidMigration objects
+     * @return the app version we upgraded FROM, or null if there was no tracked previous version.
+     */
     @Nullable
     public static Integer migrate(@NotNull Context c, @NotNull List<AndroidMigration> migrations) {
         int versionCode = getVersionCode(c);
-        Pref<Integer> pref = Prefs.sharedPreference(c, KEY, Integer.class);
-        Integer lastVersionCode = pref.get();
+        Integer lastVersionCode = getLastVersionCode(c);
         if (lastVersionCode != null && lastVersionCode != versionCode) {
             for (AndroidMigration m : migrations) {
-                if (m.version <= lastVersionCode) {
+                if (lastVersionCode < m.versionAdded) {
                     m.run(lastVersionCode);
                 }
             }
         }
-        pref.put(versionCode, true);
+        putVersionCode(c, versionCode);
         return lastVersionCode;
+    }
+
+    @Nullable
+    public static Integer getLastVersionCode(@NotNull Context c) {
+        return Prefs.sharedPreference(c, KEY, Integer.class).get();
+    }
+
+    private static void putVersionCode(@NotNull Context c, int version) {
+        Prefs.sharedPreference(c, KEY, Integer.class).put(version, true);
     }
 
     public static int getVersionCode(@NotNull Context c) {

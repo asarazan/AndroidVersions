@@ -6,12 +6,22 @@ package net.sarazan.androidversions;
  */
 public abstract class AndroidMigration {
 
-    // Run migration on any version before and including this one.
-    public final int version;
+    /**
+     * The app version at which the migration was added.
+     */
+    public final int versionAdded;
 
-    public AndroidMigration(int version) {
-        this.version = version;
+    /**
+     * Create a migration that will fire if upgrading from a version < versionAdded
+     * @param versionAdded the version when the migration was added
+     */
+    public AndroidMigration(int versionAdded) {
+        this.versionAdded = versionAdded;
     }
 
+    /**
+     * Provide any runnable logic here, e.g. post a notification, migrate schemas, etc.
+     * @param previous version we're upgrading from
+     */
     public abstract void run(int previous);
 }

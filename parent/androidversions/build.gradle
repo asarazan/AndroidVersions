@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'maven'
 
-version = '1.0.3'
+version = '1.0.4'
 group = 'net.sarazan.androidversions'
 
 android {
