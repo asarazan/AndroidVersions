@@ -3,6 +3,7 @@ package net.sarazan.androidversions;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.os.Build.VERSION;
 
 import net.sarazan.prefs.Prefs;
 
@@ -73,6 +74,12 @@ public final class AndroidVersions {
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public static void whenApi(int atLeast, Runnable run) {
+        if (VERSION.SDK_INT >= atLeast) {
+            run.run();
         }
     }
 }
