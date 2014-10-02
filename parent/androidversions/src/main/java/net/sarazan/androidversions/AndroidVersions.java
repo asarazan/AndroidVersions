@@ -47,11 +47,11 @@ public final class AndroidVersions {
 
     @Nullable
     public static Integer getLastVersionCode(@NotNull Context c) {
-        return Prefs.sharedPreference(c, KEY, Integer.class).get();
+        return Prefs.sharedPreference(KEY, Integer.class).get(c);
     }
 
     private static void putVersionCode(@NotNull Context c, int version) {
-        Prefs.sharedPreference(c, KEY, Integer.class).put(version, true);
+        Prefs.sharedPreference(KEY, Integer.class).put(c, version, true);
     }
 
     public static int getVersionCode(@NotNull Context c) {
